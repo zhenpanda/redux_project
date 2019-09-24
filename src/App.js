@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { getDataRequest, getPostsRequest, createPostRequest } from './actions/data'; 
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {    
+  componentDidMount() {
+    this.props.getDataRequest();
+    this.props.getPostsRequest();
+  }
+
+  render() {
+    return(
+      <div>
+        <h1>
+          {this.props.data}
+          {this.props.posts.map((e,i) => {
+            return(
+              <div key={i}>{e.msg}</div>
+            )
+          })}
+        </h1>
+
+        <button onClick={() => this.props.createPostRequest({"post": "Random Num Post - "})}>CLick to Add POst</button>
+      </div>
+    )
+  }
 }
 
-export default App;
+// redux providing state takeover
+const mapStateToProps = (state) => {
+    console.log("App State ->", state);
+    return {
+      data: state.data.test,
+      posts: state.data.posts
+    }
+}
+export default connect(mapStateToProps, { getDataRequest, getPostsRequest, createPostRequest })(App)  
